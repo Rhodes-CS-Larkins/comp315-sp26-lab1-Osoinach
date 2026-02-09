@@ -68,16 +68,19 @@ int main(int argc, char **argv) {
   }
 
   freeaddrinfo(servinfo);
-  unsigned char *arr[65535]; // largest udp packet size
+  char arr[65535]; // largest udp packet size
   char s[INET_ADDRSTRLEN];
 
   addr_len = sizeof their_addr;
-  if ((numbytes = recvfrom(sockfd, arr, 65535 - 1, 0,
-                           (struct sockaddr *)&their_addr, &addr_len)) == -1) {
-    perror("recvfrom");
-    exit(1);
-  }
+  //if ((numbytes = recvfrom(sockfd, arr, 65535 - 1, 0, (struct sockaddr *)&their_addr, &addr_len)) == -1) {
+  //  perror("recvfrom");
+  //  exit(1);
+  //}
   for (int i = 0; i < nping; i++) {
+    if ((numbytes = recvfrom(sockfd, arr, 65535 - 1, 0, (struct sockaddr *)&their_addr, &addr_len)) == -1) {
+      perror("recvfrom");
+      exit(1);
+    }
     printf("pong[%d]: recieved packet from %s\n", i,
            inet_ntop(AF_INET, &(((struct sockaddr_in *)&their_addr)->sin_addr), s, sizeof s));
     for (int j = 0; j < numbytes; j++) {
